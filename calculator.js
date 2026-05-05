@@ -1,38 +1,5 @@
 const display = document.querySelector('.display');
-const buttons = document.querySelectorAll('.buttons button');
-
-let firstNumber = '';
-let secondNumber = '';
-let operator = '';
-let result = '';
-
-buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-        display.textContent = btn.textContent;
-
-            if (!btn.classList.contains('operator') && !btn.classList.contains('equal') && !btn.classList.contains('misc')) {
-                if (operator === '') {
-                    firstNumber += btn.textContent;
-                    display.textContent = firstNumber;
-                } else {
-                    secondNumber += btn.textContent;
-                    display.textContent = secondNumber;
-                }
-            } else if (btn.classList.contains('operator')) {
-                operator = btn.textContent;
-                display.textContent = operator;
-            }
-            else if (btn.classList.contains('equal')) {
-                if (firstNumber && operator && secondNumber) {
-                    result = operate(operator, parseFloat(firstNumber), parseFloat(secondNumber));
-                    display.textContent = result;
-                    firstNumber = result.toString();
-                    secondNumber = '';
-                    operator = '';
-                }
-            }
-        });
-    });
+const buttons = document.querySelectorAll('button');
 
 function add(a, b) {
     return a + b;
@@ -44,18 +11,66 @@ function subtract(a, b) {
 
 function multiply(a, b) {
     return a * b;
-}   
+}
 
 function divide(a, b) {
     if (b === 0) {
-        return 'Error';
+        return 'Error: Division by zero';
     }
     return a / b;
 }
 
 function operate(operator, a, b) {
-    if (operator === '+') return add(a, b);
-    if (operator === '-') return subtract(a, b);
-    if (operator === '×') return multiply(a, b);
-    if (operator === '÷') return divide(a, b);
-}   
+    switch (operator) {
+        case '+':
+            return add(a, b);
+        case '-':
+            return subtract(a, b);
+        case '*':
+            return multiply(a, b);
+        case '/':
+            return divide(a, b);
+        default:
+            return 'Error: Invalid operator';
+    }
+}
+
+function calculate() {
+    if (currentOperator === null || shouldResetScreen) return;
+    const secondNum = parseFloat(display.textContent);
+    const result = operate(currentOperator, parseFloat(firstNumber), secondNum);
+    display.textContent = result;
+    firstNumber = result;
+    currentOperator = null;
+    shouldResetScreen = true;
+}
+
+let firstNumber = '';
+let secondNumber = '';
+let currentOperator = null;
+let shouldResetScreen = false;
+
+buttons.forEach(button => {
+    button.addEventListener('click', () => {
+        const value = button.textContent;
+        if (button.classList.contains('operator')) {
+            inputOperator(value);
+        } else if (button.classList.contains('equal')) {
+            calculate();
+        } else {
+            inputNumber(value);
+        }
+    });
+});
+
+function inputNumber(number) {
+    if (shouldResetScreen) {
+        display.textContent = '';
+        shouldResetScreen = false;
+    }
+    if (display.textContent === '0') {
+        display.textContent = number;
+    } else {
+        display.textContent += number;
+    }
+}
