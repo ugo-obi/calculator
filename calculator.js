@@ -7,11 +7,45 @@ const equalButton = document.querySelector('.equal');
 
 buttons.forEach(button => {
     button.addEventListener('click', () => {
-        if (display.textContent === '0' ){
+        if (button.classList.contains('clear')) {
+            firstNumber = '';
+            secondNumber = '';
+            operator = '';
+            display.textContent = '0';
+         } else if (button.classList.contains('misc')) {
+            return; 
+         } else if (button.classList.contains('operator')) {
+            firstNumber = display.textContent;
+            operator = button.textContent;
+            display.textContent = firstNumber + ' ' + operator + ' ';
+        } else if (button.classList.contains('equal')) {
+            const result = operate(operator, parseFloat(firstNumber), parseFloat(secondNumber)).toFixed(5);
+             display.textContent = result;
+            firstNumber = String(result);
+            secondNumber = '';
+            operator = '';
+            resetDisplay = true;  
+        } else {
+            if (operator === '') {
+            if (button.textContent === '.' && display.textContent.includes('.'))
+                return; 
+            if (resetDisplay) {
+                display.textContent = button.textContent;
+                firstNumber = button.textContent;
+                resetDisplay = false;
+                } 
+         else if (display.textContent === '0' ){
             display.textContent = button.textContent;
         } else {
             display.textContent += button.textContent;
         }
+    } else {
+        if (button.textContent === '.' && secondNumber.includes('.'))
+            return;
+        secondNumber += button.textContent;
+        display.textContent = firstNumber + ' ' + operator + ' ' + secondNumber;    
+      }
+     }
     });
 });
 
@@ -34,10 +68,7 @@ buttons.forEach(button => {
  }
 
  function divide(a, b) {
-     if (b === 0) {
-         alert("error");
-         return null;
-     }
+     if (b === 0) return 'Error: Division by zero';
      return a / b;
  }
  
