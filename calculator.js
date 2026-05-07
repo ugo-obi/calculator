@@ -19,7 +19,7 @@ buttons.forEach(button => {
             operator = button.textContent;
             display.textContent = firstNumber + ' ' + operator + ' ';
         } else if (button.classList.contains('equal')) {
-            const result = parseFloat(operate(operator, parseFloat(firstNumber), parseFloat(secondNumber)).toFixed(5));
+            const result = operate(operator, parseFloat(firstNumber), parseFloat(secondNumber)).toFixed(5);
              display.textContent = result;
             firstNumber = String(result);
             secondNumber = '';
